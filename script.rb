@@ -51,7 +51,6 @@ end
 
 installing_missing_gems do
   require 'sqlite3'
-  require 'byebug'
 end
 
 begin
