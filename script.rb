@@ -73,14 +73,19 @@ begin
   result.each do |row|
     if row[1].count('/') == 1
       row_split = row[1].split(' ')
-      if row_split.length < 3 || !is_int_string?(row_split[0]) || !is_int_string?(row_split[1])
+      if row_split.length < 2 || !is_int_string?(row_split[0])
         raise Exception.new("[ERROR] LR subroot folder has invalid name: #{LR_ROOT_FOLDER}/#{row[1]}")
+      end
+
+      date = row_split[0]
+      if row_split.length > 2 && is_int_string?(row_split[1])
+        date = "#{row_split[0]} #{row_split[1]}"
       end
 
       lr_subroot_folders << {
         id: row[0],
         name: row[1],
-        date: "#{row_split[0]} #{row_split[1]}",
+        date: date,
         subfolders: []
       }
     end
@@ -110,10 +115,14 @@ begin
   # Iterate through source folders
   src_folders.each do |src_subfolder|
     src_subfolder_split = src_subfolder.split(' ')
-    if src_subfolder_split.length < 3 || !is_int_string?(src_subfolder_split[0]) || !is_int_string?(src_subfolder_split[1])
+    if src_subfolder_split.length < 2 || !is_int_string?(src_subfolder_split[0])
       raise Exception.new("[ERROR] Source folder has invalid name: #{SRC_FOLDER}/#{src_subfolder}")
     end
-    src_date = "#{src_subfolder_split[0]} #{src_subfolder_split[1]}"
+
+    src_date = src_subfolder_split[0]
+    if src_subfolder_split.length > 2 && is_int_string?(src_subfolder_split[1])
+      src_date = "#{src_subfolder_split[0]} #{src_subfolder_split[1]}"
+    end
 
     # Find the matched "subroot" library in LR
     result = lr_subroot_folders.select{|sf| sf[:date] == src_date}
